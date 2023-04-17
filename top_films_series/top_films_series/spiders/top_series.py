@@ -2,6 +2,7 @@ import scrapy
 from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors import LinkExtractor
 
+
 class CrawlerBooksSpider(CrawlSpider):
     name = 'crawler_books'
     allowed_domains = ['imdb.com']
