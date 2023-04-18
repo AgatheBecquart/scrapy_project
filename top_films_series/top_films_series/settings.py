@@ -62,9 +62,9 @@ ROBOTSTXT_OBEY = True
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
+# ITEM_PIPELINES = {
 #    "top_films_series.pipelines.TopFilmsSeriesPipeline": 300,
-#}
+# }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
@@ -98,4 +98,4 @@ DOWNLOAD_DELAY = 1
 CONCURRENT_REQUESTS_PER_DOMAIN = 2
 COOKIES_ENABLED = False
 RETRY_TIMES = 3
-HTTPCACHE_ENABLED = True 
+HTTPCACHE_ENABLED = True

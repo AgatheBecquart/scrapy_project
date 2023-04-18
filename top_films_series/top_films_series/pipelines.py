@@ -6,8 +6,22 @@
 
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
+import pymongo 
+from pymongo import MongoClient
+from dotenv import load_dotenv
+import os
 
+load_dotenv()
+ATLAS_KEY = os.getenv('ATLAS_KEY')
 
-class TopFilmsSeriesPipeline:
+class TopSeriesPipeline(object):
+    def __init__(self):
+        self.conn = pymongo.MongoClient(
+            ATLAS_KEY,
+        )
+        db = self.conn['Top250']
+        self.collection = db['Top_series']
+        
     def process_item(self, item, spider):
+        self.collection.insert_one(item)
         return item
