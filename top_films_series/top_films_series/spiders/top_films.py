@@ -20,6 +20,11 @@ def convert_to_minutes(duration):
 
 
 class TopfilmsspiderSpider(CrawlSpider):
+    custom_settings = {
+        'ITEM_PIPELINES': {
+            'top_films_series.pipelines.TopFilmsPipeline': 400
+        }
+    }
     name = 'crawler_films'
     allowed_domains = ['imdb.com']
 

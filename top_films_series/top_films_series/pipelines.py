@@ -25,3 +25,16 @@ class TopSeriesPipeline(object):
     def process_item(self, item, spider):
         self.collection.insert_one(item)
         return item
+    
+class TopFilmsPipeline(object):
+    def __init__(self):
+        self.conn = pymongo.MongoClient(
+            ATLAS_KEY,
+        )
+        db = self.conn['Top250']
+        self.collection = db['Top_films']
+        
+    def process_item(self, item, spider):
+        self.collection.insert_one(item)
+        return item
+
