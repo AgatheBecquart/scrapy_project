@@ -40,6 +40,7 @@ class TopSeriesSpider(CrawlSpider):
         item['episode_duration'] = response.css(".ipc-inline-list--show-dividers li:nth-of-type(4)::text").extract_first()
         #item['num_seasons'] = response.css("[data-testid='hero-title-block__metadata'] span[data-testid='TitleEpisodeCount']::text").extract_first()
         item['num_episodes'] = response.css('[data-testid="episodes-header"] span.ipc-title__subtext::text').extract_first()
+        item['affiche'] = response.css('div.ipc-media--poster-l img.ipc-image::attr(src)').extract_first()
         
         # Calcul de la durée totale
         episode_duration = item.get('episode_duration')

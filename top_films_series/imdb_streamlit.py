@@ -46,47 +46,50 @@ def recherche():
             query["cast.0"] = {"$regex": actors, "$options": "i"}
         if genre:
             query["genre.0"] = {"$regex": genre, "$options": "i"}
-        if duration:
-            query["total_duration"] = {"$lt": duration}
         if note:
             query["score"] = {"$gte": str(note)}
         return list(series_collection.find(query))
-
+    
+    genres = db.Top_films.distinct("genre")
+    
     # Search parameters
     name = st.text_input("Rechercher par nom:")
     actors = st.text_input("Rechercher par acteur(s):")
-    genre = st.text_input("Rechercher par genre:")
-    duration = st.slider("Rechercher par durée (en minutes):", min_value=0, max_value=300, step=5)
+    genre = st.selectbox("Rechercher par genre :", genres)
     note = st.slider("Rechercher par note (minimale):", min_value=0.0, max_value=10.0, step=0.1)
+    if choix == "Film":
+        duration = st.slider("Rechercher par durée (en minutes):", min_value=0, max_value=300, step=5)
 
     # Search button
     if st.button("Rechercher"):
-        if choix == "film":
+        if choix == "Film":
             resultats = search_films(name, actors, genre, duration, note)
         else:
-            resultats = search_series(name, actors, genre, duration, note)
+            resultats = search_series(name, actors, genre, note)
 
-        # Display search results
         if resultats:
             for resultat in resultats:
                 # Afficher le résultat en fonction du type (film ou série)
-                if choix == "film":
-                    st.title(resultat["titre"][0])
-                    st.subheader("Année: " + str(resultat["year"]))
-                    st.write("Note: " + str(resultat["note"][0]))
-                    st.write("Synopsis:", resultat["synopsis"][0])
-                    st.write("Casting:", ", ".join(resultat["casting"]))
-                    st.write("Pays:", resultat["pays"][0])
-                    st.write("Public:", resultat["public"][0])
+                if choix == "Film":
+                    col1, col2 = st.columns([1, 3])
+                    col1.image(resultat["affiche"])
+                    col2.title(resultat["titre"][0])
+                    col2.subheader("Année: " + str(resultat["year"]))
+                    col2.write("Note: " + str(resultat["note"][0]))
+                    st.write("**Synopsis:**", resultat["synopsis"][0])
+                    st.write("**Casting:**", ", ".join(resultat["casting"]))
+                    st.write("**Pays:**", resultat["pays"][0])
                     st.write("---")
                 else:
-                    st.title(resultat["title"][0])
-                    st.subheader("Année: " + str(resultat["year"]))
-                    st.write("Note: " + str(resultat["score"][0]))
-                    st.write("Description:", resultat["description"][0])
-                    st.write("Casting:", ", ".join(resultat["cast"]))
-                    st.write("Pays:", ", ".join(resultat["country"]))
-                    st.write("Langue:", ", ".join(resultat["language"]))
+                    col1, col2 = st.columns([1, 3])
+                    col1.image(resultat["affiche"])
+                    col2.title(resultat["title"][0])
+                    col2.subheader("Année: " + str(resultat["year"]))
+                    col2.write("Note: " + str(resultat["score"][0]))
+                    st.write("**Description:**", resultat["description"][0])
+                    st.write("**Casting:**", ", ".join(resultat["cast"]))
+                    st.write("**Pays:**", ", ".join(resultat["country"]))
+                    st.write("**Langue:**", ", ".join(resultat["language"]))
                     st.write("---")
 
 # Page de réponse aux questions

@@ -53,8 +53,9 @@ class TopfilmsspiderSpider(CrawlSpider):
         item['synopsis']=response.css('span.sc-5f699a2-2 ::text').extract()
         item['casting']=response.css('.sc-52d569c6-3 .ipc-metadata-list-item--link div ::text').extract()
         item['pays']=response.css   ("[data-testid='title-details-origin'] a::text").extract()
-        item['public']=response.css('.sc-afe43def-4 li:nth-of-type(2) a::text').extract()     
-        
+        item['public']=response.css('.sc-afe43def-4 li:nth-of-type(2) a::text').extract()
+        item['affiche'] = response.css('div.ipc-media--poster-l img.ipc-image::attr(src)').extract_first()
+
         return item
        
 
