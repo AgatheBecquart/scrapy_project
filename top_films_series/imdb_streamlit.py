@@ -10,34 +10,30 @@ client = MongoClient(ATLAS_KEY)
 
 # Select the database and collections
 db = client["Top250"]
-films_collection = db["top_films"]
-series_collection = db["top_series"]
+films_collection = db["Top_films"]
+series_collection = db["Top_series"]
 
 # Page de recherche
 def recherche():
     st.title("Recherche de films et séries")
     
+    # Propose de chercher un film ou une série
+    choix = st.radio("Rechercher un/e", options=["Film", "Série"])
     
     # Define function for searching films
     def search_films(name=None, actors=None, genre=None, duration=None, note=None):
         print("Je suis dans la fonction search_films")
         query = {}
         if name:
-            print("name:", name)
-            query["title.0"] = {"$regex": name, "$options": "i"}
+            query["titre"] = {"$regex": name, "$options": "i"}
         if actors:
-            print("actors:", actors)
-            query["cast.0"] = {"$regex": actors, "$options": "i"}
+            query["casting"] = {"$regex": actors, "$options": "i"}
         if genre:
-            print("genre:", genre)
-            query["genre.0"] = {"$regex": genre, "$options": "i"}
-        if duration:
-            print("duration:", duration)
-            query["total_duration"] = {"$lt": duration}
+            query["genre"] = genre
         if note:
-            print("note:", note)
-            query["score"] = {"$gte": note}
-        print("query:", query)
+            query["note"] = {"$gte": str(note)}
+        if duration:
+            query["duree"] = {"$lte": duration}
         return list(films_collection.find(query))
 
     # Define function for searching series
@@ -53,7 +49,7 @@ def recherche():
         if duration:
             query["total_duration"] = {"$lt": duration}
         if note:
-            query["score"] = {"$gte": note}
+            query["score"] = {"$gte": str(note)}
         return list(series_collection.find(query))
 
     # Search parameters
@@ -61,41 +57,44 @@ def recherche():
     actors = st.text_input("Rechercher par acteur(s):")
     genre = st.text_input("Rechercher par genre:")
     duration = st.slider("Rechercher par durée (en minutes):", min_value=0, max_value=300, step=5)
-    note = st.slider("Rechercher par note (minimale):", min_value=0, max_value=10, step=1)
-
+    note = st.slider("Rechercher par note (minimale):", min_value=0.0, max_value=10.0, step=0.1)
 
     # Search button
     if st.button("Rechercher"):
-        films = search_films(name, actors, genre, duration, note)
-        series = search_series(name, actors, genre, duration, note)
-        print("films:", films)
-        print("series:", series)
+        if choix == "film":
+            resultats = search_films(name, actors, genre, duration, note)
+        else:
+            resultats = search_series(name, actors, genre, duration, note)
 
         # Display search results
-        if films:
-            st.subheader("Films:")
-            for film in films:
-                st.write(film["titre"][0], "(", film["year"], ")", "-", film["note"][0])
-                st.write("Synopsis:", film["synopsis"][0])
-                st.write("Casting:", ", ".join(film["casting"]))
-                st.write("Pays:", film["pays"][0])
-                st.write("Public:", film["public"][0])
-                st.write("---")
-        if series:
-            st.subheader("Séries:")
-            for serie in series:
-                st.write(serie["title"][0], "(", serie["year"], ")", "-", serie["score"])
-                st.write("Description:", serie["description"][0])
-                st.write("Casting:", ", ".join(serie["cast"]))
-                st.write("Pays:", ", ".join(serie["country"]))
-                st.write("Langue:", ", ".join(serie["language"]))
+        if resultats:
+            for resultat in resultats:
+                # Afficher le résultat en fonction du type (film ou série)
+                if choix == "film":
+                    st.title(resultat["titre"][0])
+                    st.subheader("Année: " + str(resultat["year"]))
+                    st.write("Note: " + str(resultat["note"][0]))
+                    st.write("Synopsis:", resultat["synopsis"][0])
+                    st.write("Casting:", ", ".join(resultat["casting"]))
+                    st.write("Pays:", resultat["pays"][0])
+                    st.write("Public:", resultat["public"][0])
+                    st.write("---")
+                else:
+                    st.title(resultat["title"][0])
+                    st.subheader("Année: " + str(resultat["year"]))
+                    st.write("Note: " + str(resultat["score"][0]))
+                    st.write("Description:", resultat["description"][0])
+                    st.write("Casting:", ", ".join(resultat["cast"]))
+                    st.write("Pays:", ", ".join(resultat["country"]))
+                    st.write("Langue:", ", ".join(resultat["language"]))
+                    st.write("---")
 
 # Page de réponse aux questions
 def reponse():
     
     def film_plus_long():
-            film_plus_long = db.Top_films.find_one(sort=[("duree", -1)])
-            st.write("Le film le plus long est : ", film_plus_long["titre"][0])
+        film_plus_long = db.Top_films.find_one(sort=[("duree", -1)])
+        st.write("Le film le plus long est : ", film_plus_long["titre"][0])
         
     def films_mieux_notes():
         films_mieux_notes = db.Top_films.find().sort([("note", -1)]).limit(5)
