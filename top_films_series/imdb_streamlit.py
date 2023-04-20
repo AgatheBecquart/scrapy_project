@@ -38,7 +38,6 @@ def recherche():
 
     # Define function for searching series
     def search_series(name=None, actors=None, genre=None, duration=None, note=None):
-        print("Je suis dans la fonction search_series")
         query = {}
         if name:
             query["title.0"] = {"$regex": name, "$options": "i"}
@@ -58,7 +57,7 @@ def recherche():
     genre = st.selectbox("Rechercher par genre :", genres)
     note = st.slider("Rechercher par note (minimale):", min_value=0.0, max_value=10.0, step=0.1)
     if choix == "Film":
-        duration = st.slider("Rechercher par durée (en minutes):", min_value=0, max_value=300, step=5)
+        duration = st.slider("Rechercher par durée maximum (en minutes):", min_value=0, max_value=300, step=5)
 
     # Search button
     if st.button("Rechercher"):

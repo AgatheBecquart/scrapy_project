@@ -11,4 +11,4 @@ RUN pip install --upgrade pip && \
 
 COPY . .
 
-CMD ["python", "imdb_streamlit.py", "runserver", "0.0.0.0:80"]
+CMD ["streamlit", "run", "imdb_streamlit.py", "--server.address", "0.0.0.0", "--server.port", "80"]

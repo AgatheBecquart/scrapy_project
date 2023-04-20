@@ -38,8 +38,6 @@ class TopfilmsspiderSpider(CrawlSpider):
     rules = (
     Rule(LinkExtractor(restrict_css='.titleColumn a'), callback='parse_item'),
     )
-
-
     
     def parse_item(self, response):
         item = {}
