@@ -78,6 +78,7 @@ def recherche():
                     st.write("**Synopsis:**", resultat["synopsis"][0])
                     st.write("**Casting:**", ", ".join(resultat["casting"]))
                     st.write("**Pays:**", resultat["pays"][0])
+                    st.write("Bande annonce: " + str(resultat["trailer"]))
                     st.write("---")
                 else:
                     col1, col2 = st.columns([1, 3])
